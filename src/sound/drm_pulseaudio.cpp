@@ -103,7 +103,7 @@ static int StdinRead(char *buf, size_t count)
 /* PulseAudio low level functions *********************************************/
 
 
-static pa_object pa_obj =
+static pa_object pa_obj2 =
 {
     /*.pa_m =*/			nullptr,
     /*.pa_c =*/			nullptr,
@@ -133,6 +133,8 @@ static int pa_o_sync(pa_object *pa_obj, pa_operation *pa_o)
     pa_mainloop *pa_m = pa_obj->pa_m;
     pa_context *pa_c = pa_obj->pa_c;
     pa_operation_state pa_o_s;
+    if (pa_operation_get_state(pa_o) == PA_OPERATION_DONE)
+        return PA_OK;
     if (pa_o) {
         do {
             pa_mainloop_iterate(pa_m, 1, &retval);
@@ -151,6 +153,8 @@ static int pa_s_sync(pa_object *pa_obj, pa_stream *pa_s, int error)
     int retval;
     pa_mainloop *pa_m = pa_obj->pa_m;
     pa_stream_state pa_s_s;
+    if (pa_stream_get_state(pa_s)==PA_STREAM_READY)
+        return PA_OK;
     if (error==PA_OK) {
         do {
             pa_mainloop_iterate(pa_m, 1, &retval);
@@ -362,6 +366,7 @@ void CSoundInPulse::Init_HW()
                                    pa_stream_flags_t(STREAM_FLAGS)		// Additional flags, or 0 for default
 #endif
                                   );
+    
     if (pa_s_sync(&pa_obj, pa_s, ret) != PA_OK)
         DEBUG_MSG("CSoundInPulse::Init_HW pa_stream_connect_record failed\n");
 

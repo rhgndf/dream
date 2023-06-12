@@ -122,6 +122,11 @@ protected:
 	pa_stream		*pa_s;
 	size_t			remaining_nbytes;
 	const char		*remaining_data;
+	pa_object pa_obj = {
+		.pa_m = NULL,
+		.pa_c = NULL,
+		.ref_count = 0
+	};
 
 #ifdef CLOCK_DRIFT_ADJ_ENABLED
 	int				record_sample_rate;
@@ -168,6 +173,11 @@ protected:
 	pa_stream		*pa_s;
 	pa_stream_notify_cb_userdata_t pa_stream_notify_cb_userdata_underflow;
 	pa_stream_notify_cb_userdata_t pa_stream_notify_cb_userdata_overflow;
+	pa_object pa_obj = {
+		.pa_m = NULL,
+		.pa_c = NULL,
+		.ref_count = 0
+	};
 
 #ifdef CLOCK_DRIFT_ADJ_ENABLED
 	int				iMaxSampleRateOffset;

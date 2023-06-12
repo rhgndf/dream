@@ -256,6 +256,10 @@ unix:!cross_compile {
       exists(/usr/local/include/speex/speex_preprocess.h) {
        CONFIG += speexdsp
       }
+      exists(/usr/include/fdk-aac/FDK_audio.h) | \
+      exists(/usr/local/include/fdk-aac/FDK_audio.h) {
+          CONFIG += fdk-aac
+      }
     }
 }
 win32:cross_compile {

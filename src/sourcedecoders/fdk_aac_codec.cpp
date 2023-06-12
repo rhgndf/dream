@@ -32,6 +32,8 @@
 #include "src/SDC/SDC.h"
 #include <cstring>
 
+#define HAVE_USAC
+
 FdkAacCodec::FdkAacCodec() :
     hDecoder(nullptr), hEncoder(nullptr),bUsac(false),decode_buf()
 {

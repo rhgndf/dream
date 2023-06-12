@@ -313,11 +313,11 @@ void CModul<TInput, TOutput>::Init(CParameter& Parameter,
 
 	/* Init output transfer buffer */
 	if (iMaxOutputBlockSize != 0)
-		OutputBuffer.Init(iMaxOutputBlockSize);
+		OutputBuffer.Init(iMaxOutputBlockSize * 2);
 	else
 	{
 		if (iOutputBlockSize != 0)
-			OutputBuffer.Init(iOutputBlockSize);
+			OutputBuffer.Init(iOutputBlockSize * 2);
 	}
 }
 

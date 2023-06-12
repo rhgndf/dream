@@ -129,14 +129,16 @@ bool XHEAACSuperFrame::parse(CVectorEx<_BINARY>& asf)
     // now copy into the audioFrames for simplicty
     size_t i=0;
     audioFrame.resize(frameBorderCount);
-    audioFrame[i].resize(0);
-    while(true) {
-        audioFrame[i].push_back(payload.front());
-        payload.pop_front();
-        if(audioFrame[i].size()==frameSize[i]) {
-            i++;
-            if(i>=audioFrame.size()) break;
-            audioFrame[i].resize(0);
+    if (frameBorderCount) {
+        audioFrame[i].resize(0);
+        while(payload.size()) {
+            audioFrame[i].push_back(payload.front());
+            payload.pop_front();
+            if(audioFrame[i].size()==frameSize[i]) {
+                i++;
+                if(i>=audioFrame.size()) break;
+                audioFrame[i].resize(0);
+            }
         }
     }
     //cerr << "remaining payload is " << payload.size() << " bytes" << endl;

@@ -199,11 +199,16 @@ CAudioSourceDecoder::ProcessDataInternal(CParameter & Parameters)
         Parameters.AudioComponentStatus[unsigned(Parameters.GetCurSelAudioService())].SetStatus(status);
         Parameters.Unlock();
 
+        if(iOutputBlockSize + (size_t)iResOutBlockSize * 2 > pvecOutputData->size()) {
+            pvecOutputData->Enlarge(iOutputBlockSize + (size_t)iResOutBlockSize * 2 - pvecOutputData->size());
+        }
         /* Conversion from _REAL to _SAMPLE with special function */
         for (int i = 0; i < iResOutBlockSize; i++)
         {
-            (*pvecOutputData)[iOutputBlockSize + i * 2] = Real2Sample(vecTempResBufOutCurLeft[i]);	/* Left channel */
-            (*pvecOutputData)[iOutputBlockSize + i * 2 + 1] = Real2Sample(vecTempResBufOutCurRight[i]);	/* Right channel */
+            (*pvecOutputData)[iOutputBlockSize + i * 2] = 
+            Real2Sample(vecTempResBufOutCurLeft[i]);	/* Left channel */
+            (*pvecOutputData)[iOutputBlockSize + i * 2 + 1] = 
+            Real2Sample(vecTempResBufOutCurRight[i]);	/* Right channel */
         }
 
         /* Add new block to output block size ("* 2" for stereo output block) */
