@@ -109,19 +109,23 @@ bool XHEAACSuperFrame::parse(CVectorEx<_BINARY>& asf)
             break;
         default: // boundary in this superframe
             borders[0] += start;
-            if(borders[0]<2) return false;
-            borders[0] -= 2; // header not in payload
+            //if(borders[0]<2) return false;
+            //borders[0] -= 2; // header not in payload
             frameSize[0] = borders[0];
             //cerr << "border 0 is " << borders[0] << " bytes from start of payload" << endl;
             break;
         }
         for(unsigned i=1; i<borders.size(); i++) {
             borders[i] += start;
-            borders[i] -= 2; // header not in payload
+            //borders[i] -= 2; // header not in payload
             unsigned bytes = borders[i]-borders[i-1];
             frameSize[i] = bytes;
             //cerr << "border " << i << " is " << borders[i] << " bytes from start of payload" << endl;
         }
+    } else {
+        // frameBorderCount == 0: spans entire ASF payload or bad data in header
+        audioFrame.resize(0);
+        return ok;
     }
     size_t bytesInFrames = 0; for(size_t i=0; i<frameSize.size(); i++) bytesInFrames+=frameSize[i];
     size_t next = payload.size()-bytesInFrames;
@@ -129,16 +133,14 @@ bool XHEAACSuperFrame::parse(CVectorEx<_BINARY>& asf)
     // now copy into the audioFrames for simplicty
     size_t i=0;
     audioFrame.resize(frameBorderCount);
-    if (frameBorderCount) {
-        audioFrame[i].resize(0);
-        while(payload.size()) {
-            audioFrame[i].push_back(payload.front());
-            payload.pop_front();
-            if(audioFrame[i].size()==frameSize[i]) {
-                i++;
-                if(i>=audioFrame.size()) break;
-                audioFrame[i].resize(0);
-            }
+    audioFrame[i].resize(0);
+    while(payload.size()) {
+        audioFrame[i].push_back(payload.front());
+        payload.pop_front();
+        if(audioFrame[i].size()==frameSize[i]) {
+            i++;
+            if(i>=audioFrame.size()) break;
+            audioFrame[i].resize(0);
         }
     }
     //cerr << "remaining payload is " << payload.size() << " bytes" << endl;
